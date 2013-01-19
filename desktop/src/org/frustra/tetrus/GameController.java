@@ -17,6 +17,12 @@ public class GameController extends Thread {
 		long timer = System.currentTimeMillis();
 		long nextPlace = 0;
 		while (true) {
+			try {
+				Thread.sleep(v.logicSpeed);
+			} catch (InterruptedException e) {
+				return;
+			}
+			
 			if (v.modeSelected && (v.singlePlayer || (v.loggedIn && !v.inLobby))) {
 				int tmpFallSpeed = v.keys[3] ? v.fallSpeed / 10 : v.fallSpeed;
 				if (System.currentTimeMillis() - timer > tmpFallSpeed) {
@@ -43,7 +49,7 @@ public class GameController extends Thread {
 											v.socket.send(TetrUs.PACKET_PLACE, (byte) 0x00, data);
 										} catch (IOException e) {
 											if (!(e instanceof SocketException) || !e.getMessage().equals("Socket is closed")) e.printStackTrace();
-											return;
+											continue;
 										}
 									}
 								} else {
@@ -59,7 +65,7 @@ public class GameController extends Thread {
 											v.socket.send(TetrUs.PACKET_BOARD, (byte) 0x00, data);
 										} catch (IOException e) {
 											if (!(e instanceof SocketException) || !e.getMessage().equals("Socket is closed")) e.printStackTrace();
-											return;
+											continue;
 										}
 									}
 								}
@@ -88,12 +94,6 @@ public class GameController extends Thread {
 					}
 					v.keyTimer = System.currentTimeMillis();
 				}
-			}
-			
-			try {
-				Thread.sleep(v.logicSpeed);
-			} catch (InterruptedException e) {
-				return;
 			}
 		}
 	}
