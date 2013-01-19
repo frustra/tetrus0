@@ -17,6 +17,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +66,7 @@ import org.frustra.jp33r.PeerPacket;
 import org.frustra.jp33r.PeerSocket;
 
 
-public class TetrUs extends Applet implements KeyListener {
+public class TetrUs extends Applet implements KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 
 	public static final int WIDTH = 425;
@@ -104,7 +106,7 @@ public class TetrUs extends Applet implements KeyListener {
 	
 	JPanel lobbyPlayersPane;
 	JPanel lobbyButtonsPane;
-	JList lobbyPlayersList;
+	JList<SortedPlayer> lobbyPlayersList;
 
 	String remoteName = null;
 	String remoteIP = null;
@@ -522,12 +524,12 @@ public class TetrUs extends Applet implements KeyListener {
 		lobbyPlayersPane.setLayout(null);
 		lobbyPlayersPane.setBounds(280, 15, 130, 385);
 		
-		lobbyPlayersList = new JList();
+		lobbyPlayersList = new JList<SortedPlayer>();
 		lobbyPlayersList.setListData(new SortedPlayer[0]);
 		lobbyPlayersList.setCellRenderer(new DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
 			
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean iss, boolean chf) {
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean iss, boolean chf) {
 				super.getListCellRendererComponent(list, value, index, iss, chf);
 				try {
 					setBackground(lobbyPlayers[index].backColor);
@@ -1036,6 +1038,7 @@ public class TetrUs extends Applet implements KeyListener {
 								}
 							}
 						}
+						scan.close();
 						int sel = lobbyPlayersList.getSelectedIndex();
 						SortedPlayer[] players2 = players.toArray(new SortedPlayer[0]);
 						Arrays.sort(players2, new SortedPlayer());
@@ -1065,6 +1068,7 @@ public class TetrUs extends Applet implements KeyListener {
 		new Painter(this);
 		new GameController(this);
 		addKeyListener(this);
+		addMouseListener(this);
 		
 		try {
 			socket = new PeerSocket();
@@ -1416,5 +1420,12 @@ public class TetrUs extends Applet implements KeyListener {
 	}
 
 	public void keyTyped(KeyEvent key) {}
+	public void mouseClicked(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+		e.getComponent().requestFocus();
+	}
+	public void mouseReleased(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
 
 }
